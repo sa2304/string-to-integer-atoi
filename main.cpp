@@ -4,12 +4,58 @@
 
 using namespace std;
 
+using namespace std;
+
 class Solution {
  public:
   int myAtoi(string s) {
-    // FIXME
+    bool negative = false;
+    int result = 0;
+    size_t i = 0;
+    while (i < s.length() and isspace(s[i])) { ++i; }
+    if (i < s.length()) {
+      if ('+' == s[i]) {
+        ++i;
+      } else if ('-' == s[i]) {
+        negative = true;
+        ++i;
+      }
+      while (i < s.length() and isdigit(s[i])) {
+        result = multiply(result, 10);
+        int digit = s[i] - 0x30;
+        if (negative) { digit = -digit; }
+        result = add(result, digit);
+        ++i;
+      }
 
-    return 0;
+      return result;
+    }
+
+    return result;
+  }
+
+  bool isAddOverflow(int a, int b) {
+    return (0 <= a and INT32_MAX - a < b)
+        or (a < 0 and b < INT32_MIN - a);
+  }
+
+  int add(int a, int b) {
+    if (not isAddOverflow(a, b)) { a += b; }
+    else {
+      if (a < 0) { a = INT32_MIN; }
+      else { a = INT32_MAX; }
+    }
+
+    return a;
+  }
+
+  int multiply(int a, int b) {
+    int result = 0;
+    for (int i = 0; i < b; ++i) {
+      result = add(result, a);
+    }
+
+    return result;
   }
 };
 
